@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0895ad2059a4cfd4f9c72a766438236e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - tilePrefab: {fileID: 609293373604807678, guid: efb0a64ba19d5274b9699402db38df17, type: 3}
+  - treePrefab: {fileID: 7000869971786495300, guid: 1c03ac55fbd1e0b4bbe7f0c4bc4f35fb, type: 3}
+  - stonePrefab: {fileID: 2274140292366434227, guid: 08754817ea8154e44a360811e6ed9e44, type: 3}
+  - terrainMaterial: {fileID: 2100000, guid: 0c7c6a02c16d4a044b70fd881f3dab5c, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
