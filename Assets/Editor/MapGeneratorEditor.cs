@@ -9,16 +9,13 @@ public class MapGeneratorEditor : Editor
     {
         MapGenerator mapGenerator = (MapGenerator)target;
 
-        if (DrawDefaultInspector())
-        {
-            if (mapGenerator.autoUpdate)
-            {
+        if (DrawDefaultInspector()) {
+            if (mapGenerator.autoUpdate) {
                 mapGenerator.GenerateMap();
             }
         }
 
-        if (GUILayout.Button("Generate"))
-        {
+        if (GUILayout.Button("Generate")) {
             mapGenerator.GenerateMap();
         }
     }
