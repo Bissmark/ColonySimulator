@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class TerrainChunk {
-    const float colliderGenerationDstThreshold = 5f;
+    const float colliderGenerationDstThreshold = 5;
     public event System.Action<TerrainChunk, bool> onVisibilityChanged;
     public Vector2 coord;
 
@@ -61,8 +61,6 @@ public class TerrainChunk {
         }
 
         maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
-
-        ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVerticesPerLine, meshSettings.numVerticesPerLine, heightMapSettings, sampleCentre), OnHeightMapRecieved);
     }
 
     public void Load() {

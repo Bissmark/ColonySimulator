@@ -21,7 +21,7 @@ public class MapPreview : MonoBehaviour
 
     public void DrawMapInEditor() {
         textureData.ApplyToMaterial(terrainMaterial);
-        textureData.UpdateMeshHeights(terrainMaterial, heightMapSettings.minheight, heightMapSettings.maxheight);
+        textureData.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
 
         HeightMap heightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVerticesPerLine, meshSettings.numVerticesPerLine, heightMapSettings, Vector2.zero);
 
@@ -49,7 +49,7 @@ public class MapPreview : MonoBehaviour
         meshFilter.gameObject.SetActive(true);
     }
 
-        void OnValuesUpdated() {
+    void OnValuesUpdated() {
         if (!Application.isPlaying) {
             DrawMapInEditor();
         }

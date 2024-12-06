@@ -7,27 +7,18 @@ public class UpdateableData : ScriptableObject
 
     #if UNITY_EDITOR
 
-    protected virtual void OnValidate()
-    {
-        UnityEditor.EditorApplication.delayCall += _OnValidate;
-    }
+	protected virtual void OnValidate() {
+		if (autoUpdate) {
+			UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;
+		}
+	}
 
-    void _OnValidate()
-    {
-        if (autoUpdate)
-        {
-            UnityEditor.EditorApplication.update += NotifyOfUpdatedValues;
-        }
-    }
-
-    public void NotifyOfUpdatedValues()
-    {
-        UnityEditor.EditorApplication.update -= NotifyOfUpdatedValues;
-        if (OnValuesUpdated != null)
-        {
-            OnValuesUpdated();
-        }
-    }
+	public void NotifyOfUpdatedValues() {
+		UnityEditor.EditorApplication.update -= NotifyOfUpdatedValues;
+		if (OnValuesUpdated != null) {
+			OnValuesUpdated ();
+		}
+	}
 
     #endif
 }

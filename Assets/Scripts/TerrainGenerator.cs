@@ -29,10 +29,10 @@ public class TerrainGenerator : MonoBehaviour
     void Start()
     {
         textureSettings.ApplyToMaterial(mapMaterial);
-        textureSettings.UpdateMeshHeights(mapMaterial, heightMapSettings.minheight, heightMapSettings.maxheight);
+        textureSettings.UpdateMeshHeights(mapMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
 
         float maxViewDst = detailLevels[detailLevels.Length - 1].visibleDstThreshold;
-        meshWorldSize = meshSettings.meshWorldSize - 1;
+        meshWorldSize = meshSettings.meshWorldSize;
         chunksVisibleInViewDst = Mathf.RoundToInt(maxViewDst / meshWorldSize);
 
         UpdateVisibleChunks();
@@ -77,6 +77,7 @@ public class TerrainGenerator : MonoBehaviour
                         TerrainChunk newChunk = new(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
                         terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                         newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
+                        newChunk.Load();
                     }
                 }
             }

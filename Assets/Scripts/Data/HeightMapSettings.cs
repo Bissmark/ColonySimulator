@@ -12,13 +12,13 @@ public class HeightMapSettings : UpdateableData
     public float heightMultiplier;
     public AnimationCurve heightCurve;
 
-    public float minheight {
+    public float minHeight {
         get {
             return heightMultiplier * heightCurve.Evaluate(0);
         }
     }
 
-    public float maxheight {
+    public float maxHeight {
         get {
             return heightMultiplier * heightCurve.Evaluate(1);
         }
