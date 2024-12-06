@@ -5,6 +5,8 @@ public class UpdateableData : ScriptableObject
     public event System.Action OnValuesUpdated;
     public bool autoUpdate;
 
+    #if UNITY_EDITOR
+
     protected virtual void OnValidate()
     {
         UnityEditor.EditorApplication.delayCall += _OnValidate;
@@ -26,4 +28,6 @@ public class UpdateableData : ScriptableObject
             OnValuesUpdated();
         }
     }
+
+    #endif
 }

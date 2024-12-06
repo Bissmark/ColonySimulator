@@ -15,11 +15,11 @@ MonoBehaviour:
   autoUpdate: 1
   layers:
   - texture: {fileID: 2800000, guid: b979a2bd74b720e41a5211aa2578864a, type: 3}
-    tint: {r: 0.083704144, g: 0.33606777, b: 0.9339623, a: 0}
+    tint: {r: 0.93333334, g: 0.08235291, b: 0.18499473, a: 0}
     tintStrength: 0
     startHeight: 0
     blendStrength: 0
-    textureScale: 8
+    textureScale: 30
   - texture: {fileID: 2800000, guid: 7c416ff6abb08984f964da867a3497c6, type: 3}
     tint: {r: 0.509434, g: 0.509434, b: 0.15619439, a: 0}
     tintStrength: 0
