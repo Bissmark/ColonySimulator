@@ -53,6 +53,28 @@ public class TerrainGenerator : MonoBehaviour
             viewerPositionOld = viewerPosition;
             UpdateVisibleChunks();
         }
+
+        foreach (Vector2 viewedChunkCoord in terrainChunkDictionary.Keys)
+        {
+            if (terrainChunkDictionary.ContainsKey(viewedChunkCoord))
+            {
+                terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
+            }
+            else
+            {
+                TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
+                terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
+                newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
+                newChunk.Load();
+
+                // Use the NavMeshSurface from the new chunk
+                NavMeshSurface navMeshSurface = newChunk.NavMeshSurface;
+                if (navMeshSurface != null)
+                {
+                    navMeshSurface.BuildNavMesh();
+                }
+            }
+        }
     }
 
     void UpdateVisibleChunks()

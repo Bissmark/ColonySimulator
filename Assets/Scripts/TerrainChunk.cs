@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using Unity.AI.Navigation;
+using System.Collections;
 
 public class TerrainChunk {
     const float colliderGenerationDstThreshold = 5;
@@ -30,6 +31,10 @@ public class TerrainChunk {
     MeshSettings meshSettings;
     Transform viewer;
 
+    public NavMeshSurface NavMeshSurface {
+        get; private set;
+    }
+
     public TerrainChunk(Vector2 coord, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform parent, Transform viewer, Material material)
     {
         this.coord = coord;
@@ -53,6 +58,10 @@ public class TerrainChunk {
 
         meshObject.transform.position = new Vector3(position.x, 0, position.y);
         meshObject.transform.parent = parent;
+
+        navMeshSurface.collectObjects = CollectObjects.Volume;
+        navMeshSurface.center = new Vector3(0, 5, 0);
+        navMeshSurface.size = new Vector3(122, 10, 122);
 
         SetVisible(false);
 
@@ -91,7 +100,6 @@ public class TerrainChunk {
     {
         if (heightMapRecieved) {
             float viewerDstFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPosition));
-
             bool wasVisible = IsVisible();
             bool visible = viewerDstFromNearestEdge <= maxViewDst;
 
@@ -112,11 +120,10 @@ public class TerrainChunk {
                     if (lodMesh.hasMesh) {
                         previousLODIndex = lodIndex;
                         meshFilter.mesh = lodMesh.mesh;
+                        
                         if (navMeshSurface != null) {
                             Debug.Log("Building NavMesh" + coord);
                             navMeshSurface.BuildNavMesh();
-                        } else {
-                            Debug.Log("NavMesh is null");
                         }
                     } else if (!lodMesh.hasRequestedMesh) {
                         lodMesh.RequestMesh(heightMap, meshSettings);
@@ -131,8 +138,6 @@ public class TerrainChunk {
                 }
             }
         }
-
-        
     }
 
     public void UpdateCollisionMesh()
