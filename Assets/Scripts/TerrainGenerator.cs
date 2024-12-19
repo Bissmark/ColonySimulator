@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using Unity.AI.Navigation;
+
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -23,8 +24,8 @@ public class TerrainGenerator : MonoBehaviour
     float meshWorldSize;
     int chunksVisibleInViewDst;
 
-    Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new();
-    List<TerrainChunk> visibleTerrainChunks = new();
+    Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
+    List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
     void Start()
     {

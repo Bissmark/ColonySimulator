@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.AI;
+using Unity.AI.Navigation;
 
 public class TerrainChunk {
     const float colliderGenerationDstThreshold = 5;
@@ -12,6 +14,7 @@ public class TerrainChunk {
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
     MeshCollider meshCollider;
+    NavMeshSurface navMeshSurface;
 
     LODInfo[] detailLevels;
     LODMesh[] lodMeshes;
@@ -44,10 +47,13 @@ public class TerrainChunk {
         meshRenderer = meshObject.AddComponent<MeshRenderer>();
         meshFilter = meshObject.AddComponent<MeshFilter>();
         meshCollider = meshObject.AddComponent<MeshCollider>();
+        navMeshSurface = meshObject.AddComponent<NavMeshSurface>();
+
         meshRenderer.material = material;
 
         meshObject.transform.position = new Vector3(position.x, 0, position.y);
         meshObject.transform.parent = parent;
+
         SetVisible(false);
 
         lodMeshes = new LODMesh[detailLevels.Length];
@@ -106,6 +112,12 @@ public class TerrainChunk {
                     if (lodMesh.hasMesh) {
                         previousLODIndex = lodIndex;
                         meshFilter.mesh = lodMesh.mesh;
+                        if (navMeshSurface != null) {
+                            Debug.Log("Building NavMesh" + coord);
+                            navMeshSurface.BuildNavMesh();
+                        } else {
+                            Debug.Log("NavMesh is null");
+                        }
                     } else if (!lodMesh.hasRequestedMesh) {
                         lodMesh.RequestMesh(heightMap, meshSettings);
                     }
@@ -119,6 +131,8 @@ public class TerrainChunk {
                 }
             }
         }
+
+        
     }
 
     public void UpdateCollisionMesh()
