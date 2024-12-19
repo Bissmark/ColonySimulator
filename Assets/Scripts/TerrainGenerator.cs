@@ -27,6 +27,8 @@ public class TerrainGenerator : MonoBehaviour
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
     List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
+    public float maxLoadDistance = 200f;
+
     void Start()
     {
         textureSettings.ApplyToMaterial(mapMaterial);
@@ -93,14 +95,18 @@ public class TerrainGenerator : MonoBehaviour
             for (int xOffset = -chunksVisibleInViewDst; xOffset <= chunksVisibleInViewDst; xOffset++) {
                 Vector2 viewedChunkCoord = new(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
 
-                if (!alreadyUpdatedChunkCoords.Contains(viewedChunkCoord)) {
-                    if (terrainChunkDictionary.ContainsKey(viewedChunkCoord)) {
-                        terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
-                    } else {
-                        TerrainChunk newChunk = new(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
-                        terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
-                        newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
-                        newChunk.Load();
+                float distanceToChunk = Vector2.Distance(viewerPosition, viewedChunkCoord * meshWorldSize);
+
+                if (distanceToChunk <= maxLoadDistance) {
+                    if (!alreadyUpdatedChunkCoords.Contains(viewedChunkCoord)) {
+                        if (terrainChunkDictionary.ContainsKey(viewedChunkCoord)) {
+                            terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
+                        } else {
+                            TerrainChunk newChunk = new(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
+                            terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
+                            newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
+                            newChunk.Load();
+                        }
                     }
                 }
             }
