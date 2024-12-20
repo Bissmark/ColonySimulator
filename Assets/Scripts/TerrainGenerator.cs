@@ -27,7 +27,7 @@ public class TerrainGenerator : MonoBehaviour
     Dictionary<Vector2, TerrainChunk> terrainChunkDictionary = new Dictionary<Vector2, TerrainChunk>();
     List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
-    public float maxLoadDistance = 200f;
+    public float maxLoadDistance = 300f;
 
     void Start()
     {

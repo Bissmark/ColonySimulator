@@ -62,6 +62,7 @@ public class TerrainChunk {
         navMeshSurface.collectObjects = CollectObjects.Volume;
         navMeshSurface.center = new Vector3(0, 5, 0);
         navMeshSurface.size = new Vector3(122, 10, 122);
+        navMeshSurface.minRegionArea = 100;
 
         SetVisible(false);
 
