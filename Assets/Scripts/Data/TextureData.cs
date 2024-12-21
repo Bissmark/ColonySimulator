@@ -8,6 +8,8 @@ public class TextureData : UpdateableData
     const TextureFormat textureFormat = TextureFormat.RGB565;
 
     public Layer[] layers;
+    public GameObject treePrefab;
+    public GameObject rockPrefab;
 
     float savedMinHeight;
     float savedMaxHeight;
@@ -59,5 +61,7 @@ public class TextureData : UpdateableData
         [Range(0, 1)]
         public float blendStrength;
         public float textureScale;
+        public bool canSpawnTrees;
+        public bool canSpawnRocks;
     }
 }

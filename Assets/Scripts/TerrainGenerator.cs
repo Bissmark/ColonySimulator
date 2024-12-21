@@ -64,7 +64,7 @@ public class TerrainGenerator : MonoBehaviour
             }
             else
             {
-                TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
+                TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, textureSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
                 terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                 newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
                 newChunk.Load();
@@ -102,7 +102,7 @@ public class TerrainGenerator : MonoBehaviour
                         if (terrainChunkDictionary.ContainsKey(viewedChunkCoord)) {
                             terrainChunkDictionary[viewedChunkCoord].UpdateTerrainChunk();
                         } else {
-                            TerrainChunk newChunk = new(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
+                            TerrainChunk newChunk = new(viewedChunkCoord, heightMapSettings, meshSettings, textureSettings, detailLevels, colliderLODIndex, transform, viewer, mapMaterial);
                             terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                             newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
                             newChunk.Load();

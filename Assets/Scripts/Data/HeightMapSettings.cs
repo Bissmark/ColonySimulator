@@ -5,7 +5,7 @@ using Cinemachine;
 [CreateAssetMenu()]
 public class HeightMapSettings : UpdateableData
 {
-   public NoiseSettings noiseSettings;
+    public NoiseSettings noiseSettings;
 
     public bool useFalloff;
 
