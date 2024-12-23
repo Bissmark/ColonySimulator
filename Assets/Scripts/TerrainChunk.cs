@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using Unity.AI.Navigation;
 using System.Collections;
 using UnityEngine.UI;
+using System.Linq;
 
 public class TerrainChunk {
     const float colliderGenerationDstThreshold = 5;
@@ -174,41 +175,48 @@ public class TerrainChunk {
         return meshObject.activeSelf;
     }
 
+    HeightMap treeHeightMap;
+
     public void SpawnTrees(int numTrees, float maxLoadDistance, Vector2 viewerPosition)
     {
-        for (int i = 0; i < numTrees; i++)
-        {
-            // Generate random positions within the bounds of the terrain chunk
+        treeHeightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVerticesPerLine, meshSettings.numVerticesPerLine, heightMapSettings, sampleCentre);
+
+
+
+        for (int i = 0; i < numTrees; i++) {
             float x = Random.Range(0, meshSettings.meshWorldSize);
             float z = Random.Range(0, meshSettings.meshWorldSize);
 
-            // Get the height from the heightmap
             float height = GetHeightFromHeightMap(x, z);
 
             // Convert local position to world position
-            Vector3 worldPosition = new Vector3(x, 0, z) + meshObject.transform.position;
+            Vector3 worldPosition = new Vector3(x, height, z) + new Vector3(bounds.min.x, 0, bounds.min.y);
 
             // Check if the world position is within the maxLoadDistance from the viewer
             if (Vector2.Distance(new Vector2(worldPosition.x, worldPosition.z), viewerPosition) <= maxLoadDistance)
             {
-                // Instantiate the tree prefab at the calculated position
-                GameObject tree = GameObject.Instantiate(textureData.treePrefab, worldPosition, Quaternion.identity);
-                tree.transform.parent = meshObject.transform;
+                if (textureData.layers[1].canSpawnTrees)
+                {
+                    // Instantiate the tree prefab at the calculated position which is also on the layer in the textureData
+                    GameObject tree = GameObject.Instantiate(textureData.treePrefab, worldPosition, Quaternion.identity);
+                    tree.transform.parent = meshObject.transform;
+                }
             }
         }
     }
-
+    
     float GetHeightFromHeightMap(float x, float z)
     {
-        // Convert world position to heightmap position
-        int mapX = Mathf.RoundToInt(x / meshSettings.meshWorldSize * (meshSettings.numVerticesPerLine - 1));
-        int mapZ = Mathf.RoundToInt(z / meshSettings.meshWorldSize * (meshSettings.numVerticesPerLine - 1));
+        // Convert local position to heightmap position
+        int mapX = Mathf.RoundToInt(x / meshSettings.meshWorldSize * (treeHeightMap.values.GetLength(0) - 1));
+        int mapZ = Mathf.RoundToInt(z / meshSettings.meshWorldSize * (treeHeightMap.values.GetLength(1) - 1));
 
-        mapX = Mathf.Clamp(mapX, 0, heightMap.values.GetLength(0) - 10);
-        mapZ = Mathf.Clamp(mapZ, 0, heightMap.values.GetLength(1) - 10);
+        // Ensure the indices are within bounds
+        mapX = Mathf.Clamp(mapX, 0, treeHeightMap.values.GetLength(0) - 1);
+        mapZ = Mathf.Clamp(mapZ, 0, treeHeightMap.values.GetLength(1) - 1);
 
         // Get the height value from the heightmap
-        return heightMap.values[mapX, mapZ] * meshSettings.meshScale;
+        return heightMap.values[mapX, mapZ];
     }
 
     class LODMesh {

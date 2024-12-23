@@ -34,6 +34,7 @@ Shader "Custom/Terrain"
         UNITY_DECLARE_TEX2DARRAY(baseTextures);
 
         struct Input {
+            float2 uv_MainTex;
             float3 worldPos;
             float3 worldNormal;
         };
@@ -62,6 +63,7 @@ Shader "Custom/Terrain"
         void surf (Input IN, inout SurfaceOutputStandard o) {
             float heightPercent = inverseLerp(minHeight, maxHeight, IN.worldPos.y);
             float3 blendAxes = abs(IN.worldNormal);
+
             blendAxes /= blendAxes.x + blendAxes.y + blendAxes.z;
             
             for (int i = 0; i < layerCount; i++) {
