@@ -106,6 +106,7 @@ public class TerrainGenerator : MonoBehaviour
                             terrainChunkDictionary.Add(viewedChunkCoord, newChunk);
                             newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
                             newChunk.Load();
+                            newChunk.CheckAndSpawnTrees(10, 250, viewerPosition);
                         }
                     }
                 }

@@ -87,6 +87,12 @@ public class TerrainChunk {
         ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVerticesPerLine, meshSettings.numVerticesPerLine, heightMapSettings, sampleCentre), OnHeightMapRecieved);
     }
 
+    Vector2 viewerPosition {
+        get {
+            return new Vector2(viewer.position.x, viewer.position.z);
+        }
+    }
+
     void OnHeightMapRecieved(object heightMapObject)
     {
         this.heightMap = (HeightMap)heightMapObject;
@@ -96,11 +102,6 @@ public class TerrainChunk {
         //SpawnTrees(10, 250, viewerPosition);
     }
 
-    Vector2 viewerPosition {
-        get {
-            return new Vector2(viewer.position.x, viewer.position.z);
-        }
-    }
 
     public void UpdateTerrainChunk()
     {
@@ -177,9 +178,19 @@ public class TerrainChunk {
         return meshObject.activeSelf;
     }
 
+    public void CheckAndSpawnTrees(int numTrees, float maxLoadDistance, Vector2 viewerPosition)
+    {
+        if (hasSetCollider)
+        {
+            SpawnTrees(numTrees, maxLoadDistance, viewerPosition);
+        }
+    }
+
     public void SpawnTrees(int numTrees, float maxLoadDistance, Vector2 viewerPosition)
     {
-        for (int i = 0; i < numTrees; i++)
+        int treesSpawned = 0;
+
+        while (treesSpawned < numTrees)
         {
             float x = Random.Range(0, meshSettings.meshWorldSize);
             float z = Random.Range(0, meshSettings.meshWorldSize);
@@ -188,7 +199,9 @@ public class TerrainChunk {
 
             if (Physics.Raycast(worldPosition, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity))
             {
-                if (textureData.layers[2].canSpawnTrees)
+                float height = hitInfo.point.y;
+
+                if (CanSpawnTreesAtHeight(height))
                 {
                     if (Vector2.Distance(new Vector2(worldPosition.x, worldPosition.z), viewerPosition) <= maxLoadDistance)
                     {
@@ -198,14 +211,30 @@ public class TerrainChunk {
                             Quaternion.identity
                         );
                         tree.transform.parent = meshObject.transform;
+                        treesSpawned++;
                     }
                 }
+
+
             }
             else
             {
                 Debug.Log("Raycast did not hit.");
             }
         }
+    }
+
+    bool CanSpawnTreesAtHeight(float height)
+    {
+        // Check if the height corresponds to a layer that allows tree spawning
+        foreach (var layer in textureData.layers)
+        {
+            if (height >= layer.startHeight * heightMapSettings.heightMultiplier && height <= (layer.startHeight + layer.blendStrength) * heightMapSettings.heightMultiplier && layer.canSpawnTrees)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     class LODMesh {
