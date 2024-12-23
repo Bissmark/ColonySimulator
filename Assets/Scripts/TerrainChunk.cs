@@ -93,7 +93,7 @@ public class TerrainChunk {
         heightMapRecieved = true;
 
         UpdateTerrainChunk();
-        SpawnTrees(10, 250, viewerPosition);
+        //SpawnTrees(10, 250, viewerPosition);
     }
 
     Vector2 viewerPosition {
@@ -160,6 +160,8 @@ public class TerrainChunk {
                 if (lodMeshes[colliderLODIndex].hasMesh) {
                     meshCollider.sharedMesh = lodMeshes[colliderLODIndex].mesh;
                     hasSetCollider = true;
+
+                    SpawnTrees(10, 250, viewerPosition);
                 }
             }
         }
@@ -175,48 +177,35 @@ public class TerrainChunk {
         return meshObject.activeSelf;
     }
 
-    HeightMap treeHeightMap;
-
     public void SpawnTrees(int numTrees, float maxLoadDistance, Vector2 viewerPosition)
     {
-        treeHeightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVerticesPerLine, meshSettings.numVerticesPerLine, heightMapSettings, sampleCentre);
-
-
-
-        for (int i = 0; i < numTrees; i++) {
+        for (int i = 0; i < numTrees; i++)
+        {
             float x = Random.Range(0, meshSettings.meshWorldSize);
             float z = Random.Range(0, meshSettings.meshWorldSize);
+            
+            Vector3 worldPosition = new Vector3(x, 100, z) + new Vector3(bounds.min.x, 0, bounds.min.y);
 
-            float height = GetHeightFromHeightMap(x, z);
-
-            // Convert local position to world position
-            Vector3 worldPosition = new Vector3(x, height, z) + new Vector3(bounds.min.x, 0, bounds.min.y);
-
-            // Check if the world position is within the maxLoadDistance from the viewer
-            if (Vector2.Distance(new Vector2(worldPosition.x, worldPosition.z), viewerPosition) <= maxLoadDistance)
+            if (Physics.Raycast(worldPosition, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity))
             {
-                if (textureData.layers[1].canSpawnTrees)
+                if (textureData.layers[2].canSpawnTrees)
                 {
-                    // Instantiate the tree prefab at the calculated position which is also on the layer in the textureData
-                    GameObject tree = GameObject.Instantiate(textureData.treePrefab, worldPosition, Quaternion.identity);
-                    tree.transform.parent = meshObject.transform;
+                    if (Vector2.Distance(new Vector2(worldPosition.x, worldPosition.z), viewerPosition) <= maxLoadDistance)
+                    {
+                        GameObject tree = GameObject.Instantiate(
+                            textureData.treePrefab,
+                            new Vector3(x, hitInfo.point.y, z) + new Vector3(bounds.min.x, 0, bounds.min.y),
+                            Quaternion.identity
+                        );
+                        tree.transform.parent = meshObject.transform;
+                    }
                 }
             }
+            else
+            {
+                Debug.Log("Raycast did not hit.");
+            }
         }
-    }
-    
-    float GetHeightFromHeightMap(float x, float z)
-    {
-        // Convert local position to heightmap position
-        int mapX = Mathf.RoundToInt(x / meshSettings.meshWorldSize * (treeHeightMap.values.GetLength(0) - 1));
-        int mapZ = Mathf.RoundToInt(z / meshSettings.meshWorldSize * (treeHeightMap.values.GetLength(1) - 1));
-
-        // Ensure the indices are within bounds
-        mapX = Mathf.Clamp(mapX, 0, treeHeightMap.values.GetLength(0) - 1);
-        mapZ = Mathf.Clamp(mapZ, 0, treeHeightMap.values.GetLength(1) - 1);
-
-        // Get the height value from the heightmap
-        return heightMap.values[mapX, mapZ];
     }
 
     class LODMesh {
